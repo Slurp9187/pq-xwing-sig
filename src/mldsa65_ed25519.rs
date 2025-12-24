@@ -84,14 +84,17 @@ impl PartialEq for VerifyingKey {
 
 impl Eq for VerifyingKey {}
 
-#[derive(ZeroizeOnDrop)]
 pub struct SigningKey {
+    sk_ml: MLDSA65KeyPair,
     sk_ed: ed25519_dalek::SigningKey,
 }
 
 impl Debug for SigningKey {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("SigningKey").field("sk_ed", &"..").finish()
+        f.debug_struct("SigningKey")
+            .field("sk_ml", &"..")
+            .field("sk_ed", &"..")
+            .finish()
     }
 }
 
@@ -176,7 +179,18 @@ impl TryFrom<&[u8; VERIFYING_KEY_SIZE]> for VerifyingKey {
 impl SigningKey {
     pub fn new(seed: [u8; MASTER_SEED_SIZE]) -> Self {
         let sk_ed = ed25519_dalek::SigningKey::from_bytes(&seed);
-        Self { sk_ed }
+        let sk_ml = expand_seed(&seed);
+        Self { sk_ml, sk_ed }
+    }
+
+    pub fn from_bytes(bytes: [u8; 64]) -> Self {
+        let mut sk_ml_bytes = [0u8; 32];
+        sk_ml_bytes.copy_from_slice(&bytes[..32]);
+        let sk_ml = generate_key_pair(sk_ml_bytes);
+        let mut sk_ed_bytes = [0u8; 32];
+        sk_ed_bytes.copy_from_slice(&bytes[32..]);
+        let sk_ed = ed25519_dalek::SigningKey::from_bytes(&sk_ed_bytes);
+        Self { sk_ml, sk_ed }
     }
 
     pub fn sign(
@@ -189,18 +203,13 @@ impl SigningKey {
             return Err(CompositeError::InvalidContextLength);
         }
 
-        let ed_seed_bytes = self.sk_ed.to_bytes();
-        let ed_seed_array = Zeroizing::new(ed_seed_bytes); // Already [u8; 32]
-        let kp_ml = expand_seed(&*ed_seed_array);
-        let sk_ml = kp_ml.signing_key;
-
         let ph_m = compute_ph(message);
         let m_prime = compute_m_prime(&ph_m, context);
 
         let mut rand = Zeroizing::new([0u8; 32]);
         rng.fill_bytes(&mut *rand);
 
-        let sig_ml = ml_dsa_sign(&sk_ml, &m_prime, LABEL, *rand)
+        let sig_ml = ml_dsa_sign(&self.sk_ml.signing_key, &m_prime, LABEL, *rand)
             .map_err(|_| CompositeError::MlDsaSignError)?;
 
         let sig_ed = self.sk_ed.sign(&m_prime);
@@ -209,12 +218,9 @@ impl SigningKey {
     }
 
     pub fn verifying_key(&self) -> VerifyingKey {
-        let ed_seed_bytes = self.sk_ed.to_bytes();
-        let ed_seed_array = Zeroizing::new(ed_seed_bytes);
-        let kp_ml = expand_seed(&*ed_seed_array);
         let vk_ed = self.sk_ed.verifying_key();
         VerifyingKey {
-            vk_ml: kp_ml.verification_key,
+            vk_ml: self.sk_ml.verification_key.clone(),
             vk_ed,
         }
     }
@@ -251,7 +257,10 @@ impl TryFrom<&[u8]> for Signature {
 
 pub fn generate_keypair<R: CryptoRng + RngCore>(rng: &mut R) -> (SigningKey, VerifyingKey) {
     let sk_ed = ed25519_dalek::SigningKey::generate(rng);
-    let sk = SigningKey { sk_ed };
+    let mut ml_seed = Zeroizing::new([0u8; 32]);
+    rng.fill_bytes(&mut *ml_seed);
+    let sk_ml = generate_key_pair(*ml_seed);
+    let sk = SigningKey { sk_ml, sk_ed };
     let vk = sk.verifying_key();
     (sk, vk)
 }
