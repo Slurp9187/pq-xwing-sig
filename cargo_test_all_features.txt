@@ -1,0 +1,59 @@
+   Compiling ed448-goldilocks v0.14.0-pre.4
+error[E0053]: method `try_from_rng` has an incompatible type for trait
+   --> C:\Users\chadm\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ed448-goldilocks-0.14.0-pre.4\src\decaf\points.rs:172:40
+    |
+172 |     fn try_from_rng<R>(rng: &mut R) -> Result<Self, R::Error>
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^ expected associated type, found `Infallible`
+    |
+    = note: expected signature `fn(&mut _) -> Result<_, <R as elliptic_curve::rand_core::TryRngCore>::Error>`
+               found signature `fn(&mut _) -> Result<_, Infallible>`
+help: change the output type to match the trait
+    |
+172 -     fn try_from_rng<R>(rng: &mut R) -> Result<Self, R::Error>
+172 +     fn try_from_rng<R>(rng: &mut R) -> Result<DecafPoint, <R as elliptic_curve::rand_core::TryRngCore>::Error>
+    |
+
+error[E0053]: method `try_from_rng` has an incompatible type for trait
+   --> C:\Users\chadm\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ed448-goldilocks-0.14.0-pre.4\src\edwards\extended.rs:105:40
+    |
+105 |     fn try_from_rng<R>(rng: &mut R) -> Result<Self, R::Error>
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^ expected associated type, found `Infallible`
+    |
+    = note: expected signature `fn(&mut _) -> Result<_, <R as elliptic_curve::rand_core::TryRngCore>::Error>`
+               found signature `fn(&mut _) -> Result<_, Infallible>`
+help: change the output type to match the trait
+    |
+105 -     fn try_from_rng<R>(rng: &mut R) -> Result<Self, R::Error>
+105 +     fn try_from_rng<R>(rng: &mut R) -> Result<edwards::extended::EdwardsPoint, <R as elliptic_curve::rand_core::TryRngCore>::Error>
+    |
+
+error[E0053]: method `try_from_rng` has an incompatible type for trait
+   --> C:\Users\chadm\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ed448-goldilocks-0.14.0-pre.4\src\field\element.rs:241:61
+    |
+241 |     fn try_from_rng<R: TryRngCore + ?Sized>(rng: &mut R) -> Result<Self, R::Error> {
+    |                                                             ^^^^^^^^^^^^^^^^^^^^^^ expected associated type, found `Infallible`
+    |
+    = note: expected signature `fn(&mut _) -> Result<_, <R as elliptic_curve::rand_core::TryRngCore>::Error>`
+               found signature `fn(&mut _) -> Result<_, Infallible>`
+help: change the output type to match the trait
+    |
+241 -     fn try_from_rng<R: TryRngCore + ?Sized>(rng: &mut R) -> Result<Self, R::Error> {
+241 +     fn try_from_rng<R: TryRngCore + ?Sized>(rng: &mut R) -> Result<element::FieldElement, <R as elliptic_curve::rand_core::TryRngCore>::Error> {
+    |
+
+error[E0053]: method `try_from_rng` has an incompatible type for trait
+   --> C:\Users\chadm\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ed448-goldilocks-0.14.0-pre.4\src\field\scalar.rs:306:61
+    |
+306 |     fn try_from_rng<R: TryRngCore + ?Sized>(rng: &mut R) -> Result<Self, R::Error> {
+    |                                                             ^^^^^^^^^^^^^^^^^^^^^^ expected associated type, found `Infallible`
+    |
+    = note: expected signature `fn(&mut _) -> Result<_, <R as elliptic_curve::rand_core::TryRngCore>::Error>`
+               found signature `fn(&mut _) -> Result<_, Infallible>`
+help: change the output type to match the trait
+    |
+306 -     fn try_from_rng<R: TryRngCore + ?Sized>(rng: &mut R) -> Result<Self, R::Error> {
+306 +     fn try_from_rng<R: TryRngCore + ?Sized>(rng: &mut R) -> Result<Scalar<C>, <R as elliptic_curve::rand_core::TryRngCore>::Error> {
+    |
+
+For more information about this error, try `rustc --explain E0053`.
+error: could not compile `ed448-goldilocks` (lib) due to 4 previous errors
