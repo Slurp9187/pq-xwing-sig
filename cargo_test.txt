@@ -1,9 +1,101 @@
    Compiling pq-composite-sig v0.1.0 (C:\Users\chadm\Projects\pq-composite-sig)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.02s
-     Running tests\test_vectors.rs (target\debug\deps\test_vectors-abd540e457621fce.exe)
+error[E0425]: cannot find value `ML_PK_SIZE` in this scope
+  --> tests\mldsa44_ed25519_tests.rs:83:27
+   |
+83 |     let vk_ml_bytes: [u8; ML_PK_SIZE] = vk_bytes[..ML_PK_SIZE].try_into().unwrap();
+   |                           ^^^^^^^^^^ not found in this scope
 
-running 1 test
-test test_composite_vectors ... ok
+error[E0425]: cannot find value `ML_PK_SIZE` in this scope
+  --> tests\mldsa44_ed25519_tests.rs:83:52
+   |
+83 |     let vk_ml_bytes: [u8; ML_PK_SIZE] = vk_bytes[..ML_PK_SIZE].try_into().unwrap();
+   |                                                    ^^^^^^^^^^ not found in this scope
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+error[E0425]: cannot find value `ED_PK_SIZE` in this scope
+  --> tests\mldsa44_ed25519_tests.rs:84:27
+   |
+84 |     let vk_ed_bytes: [u8; ED_PK_SIZE] = vk_bytes[ML_PK_SIZE..].try_into().unwrap();
+   |                           ^^^^^^^^^^ not found in this scope
 
+error[E0425]: cannot find value `ML_PK_SIZE` in this scope
+  --> tests\mldsa44_ed25519_tests.rs:84:50
+   |
+84 |     let vk_ed_bytes: [u8; ED_PK_SIZE] = vk_bytes[ML_PK_SIZE..].try_into().unwrap();
+   |                                                  ^^^^^^^^^^ not found in this scope
+
+error[E0433]: failed to resolve: use of undeclared type `MLDSA44VerificationKey`
+  --> tests\mldsa44_ed25519_tests.rs:86:16
+   |
+86 |         vk_ml: MLDSA44VerificationKey::new(vk_ml_bytes),
+   |                ^^^^^^^^^^^^^^^^^^^^^^ use of undeclared type `MLDSA44VerificationKey`
+   |
+help: consider importing this type alias
+   |
+ 1 + use libcrux_ml_dsa::ml_dsa_44::MLDSA44VerificationKey;
+   |
+
+error[E0425]: cannot find value `ML_SIG_SIZE` in this scope
+  --> tests\mldsa44_ed25519_tests.rs:90:28
+   |
+90 |     let sig_ml_bytes: [u8; ML_SIG_SIZE] = sig_bytes[..ML_SIG_SIZE].try_into().unwrap();
+   |                            ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `ML_SIG_SIZE` in this scope
+  --> tests\mldsa44_ed25519_tests.rs:90:55
+   |
+90 |     let sig_ml_bytes: [u8; ML_SIG_SIZE] = sig_bytes[..ML_SIG_SIZE].try_into().unwrap();
+   |                                                       ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `ED_SIG_SIZE` in this scope
+  --> tests\mldsa44_ed25519_tests.rs:91:28
+   |
+91 |     let sig_ed_bytes: [u8; ED_SIG_SIZE] = sig_bytes[ML_SIG_SIZE..].try_into().unwrap();
+   |                            ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `ML_SIG_SIZE` in this scope
+  --> tests\mldsa44_ed25519_tests.rs:91:53
+   |
+91 |     let sig_ed_bytes: [u8; ED_SIG_SIZE] = sig_bytes[ML_SIG_SIZE..].try_into().unwrap();
+   |                                                     ^^^^^^^^^^^ not found in this scope
+
+error[E0433]: failed to resolve: use of undeclared type `MLDSA44Signature`
+  --> tests\mldsa44_ed25519_tests.rs:93:17
+   |
+93 |         sig_ml: MLDSA44Signature::new(sig_ml_bytes),
+   |                 ^^^^^^^^^^^^^^^^ use of undeclared type `MLDSA44Signature`
+   |
+help: consider importing this type alias
+   |
+ 1 + use libcrux_ml_dsa::ml_dsa_44::MLDSA44Signature;
+   |
+
+warning: unused import: `RngCore`
+ --> tests\mldsa44_ed25519_tests.rs:3:17
+  |
+3 | use rand_core::{RngCore, SeedableRng};
+  |                 ^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0433]: failed to resolve: use of undeclared type `EdVerifyingKey`
+  --> tests\mldsa44_ed25519_tests.rs:87:16
+   |
+87 |         vk_ed: EdVerifyingKey::from_bytes(&vk_ed_bytes).unwrap(),
+   |                ^^^^^^^^^^^^^^
+   |                |
+   |                use of undeclared type `EdVerifyingKey`
+   |                help: a struct with a similar name exists: `VerifyingKey`
+
+error[E0433]: failed to resolve: use of undeclared type `EdSignature`
+  --> tests\mldsa44_ed25519_tests.rs:94:17
+   |
+94 |         sig_ed: EdSignature::from_bytes(&sig_ed_bytes),
+   |                 ^^^^^^^^^^^
+   |                 |
+   |                 use of undeclared type `EdSignature`
+   |                 help: a struct with a similar name exists: `Signature`
+
+Some errors have detailed explanations: E0425, E0433.
+For more information about an error, try `rustc --explain E0425`.
+warning: `pq-composite-sig` (test "mldsa44_ed25519_tests") generated 1 warning
+error: could not compile `pq-composite-sig` (test "mldsa44_ed25519_tests") due to 12 previous errors; 1 warning emitted

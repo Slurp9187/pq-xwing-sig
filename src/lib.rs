@@ -1,5 +1,6 @@
 //! Draft-compliant composite ML-DSA signatures
 //! Following IETF draft-ietf-lamps-pq-composite-sigs-13
+pub mod mldsa44_ed25519;
 pub mod mldsa65_ed25519;
 pub mod mldsa87_ed448;
 

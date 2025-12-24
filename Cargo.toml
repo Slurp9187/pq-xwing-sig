@@ -12,6 +12,7 @@ categories = ["cryptography", "no-std"]
 libcrux-ml-dsa = { git = "https://github.com/cryspen/libcrux", package = "libcrux-ml-dsa", branch = "main" }
 ed448-goldilocks-plus = { version = "0.16", features = ["signing"] }
 sha3 = "0.10"
+sha2 = "0.10"
 zeroize = { version = "1.8", features = ["zeroize_derive"] }
 rand_core = "0.6"
 thiserror = "2.0"
