@@ -21,6 +21,7 @@ use sha3::{
 };
 use signature::Verifier;
 use std::fmt::{Debug, Formatter};
+use subtle::ConstantTimeEq;
 use thiserror::Error;
 use zeroize::{Zeroize, ZeroizeOnDrop, Zeroizing};
 
@@ -67,6 +68,14 @@ impl Debug for VerifyingKey {
     }
 }
 
+impl PartialEq for VerifyingKey {
+    fn eq(&self, other: &Self) -> bool {
+        self.to_bytes().ct_eq(&other.to_bytes()).into()
+    }
+}
+
+impl Eq for VerifyingKey {}
+
 #[derive(ZeroizeOnDrop)]
 pub struct SigningKey {
     sk_ed: EdSigningKey,
@@ -92,6 +101,14 @@ impl Debug for Signature {
             .finish()
     }
 }
+
+impl PartialEq for Signature {
+    fn eq(&self, other: &Self) -> bool {
+        self.to_bytes().ct_eq(&other.to_bytes()).into()
+    }
+}
+
+impl Eq for Signature {}
 
 impl VerifyingKey {
     pub fn to_bytes(&self) -> [u8; VERIFYING_KEY_SIZE] {
