@@ -9,7 +9,7 @@ fn test_rng() -> ChaCha12Rng {
 fn test_generate_keypair() {
     let mut rng = test_rng();
     let (sk, vk) = generate_keypair(&mut rng);
-    assert_eq!(sk.verifying_key().to_bytes(), vk.to_bytes());
+    assert_eq!(sk.verifying_key(), vk);
 }
 #[test]
 fn test_sign_verify_roundtrip() {
@@ -71,13 +71,11 @@ fn test_serialization_roundtrip() {
     let sig_bytes = sig.to_bytes();
     let vk_deserialized = VerifyingKey::from(&vk_bytes);
     let sig_deserialized = Signature::try_from(&sig_bytes[..]).unwrap();
-    assert_eq!(vk.to_bytes(), vk_deserialized.to_bytes());
-    assert_eq!(sig.to_bytes(), sig_deserialized.to_bytes());
-    assert!(
-        vk_deserialized
-            .verify(message, &sig_deserialized, context)
-            .is_ok()
-    );
+    assert_eq!(vk, vk_deserialized);
+    assert_eq!(sig, sig_deserialized);
+    assert!(vk_deserialized
+        .verify(message, &sig_deserialized, context)
+        .is_ok());
 }
 #[test]
 fn test_deterministic_keys_from_seed() {
@@ -86,7 +84,7 @@ fn test_deterministic_keys_from_seed() {
     let sk2 = SigningKey::new(seed);
     let vk1 = sk1.verifying_key();
     let vk2 = sk2.verifying_key();
-    assert_eq!(vk1.to_bytes(), vk2.to_bytes());
+    assert_eq!(vk1, vk2);
 }
 #[test]
 fn test_verify_wrong_key() {

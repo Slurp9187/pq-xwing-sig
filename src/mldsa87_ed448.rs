@@ -87,6 +87,14 @@ impl Debug for SigningKey {
     }
 }
 
+impl PartialEq for SigningKey {
+    fn eq(&self, other: &Self) -> bool {
+        self.verifying_key() == other.verifying_key()
+    }
+}
+
+impl Eq for SigningKey {}
+
 #[derive(Clone)]
 pub struct Signature {
     sig_ml: MLDSA87Signature,
@@ -169,8 +177,8 @@ impl SigningKey {
         }
 
         let ed_seed_bytes = self.sk_ed.to_bytes();
-        let ed_seed_array: [u8; MASTER_SEED_SIZE] = (&*ed_seed_bytes).try_into().unwrap();
-        let kp_ml = expand_seed(&ed_seed_array);
+        let ed_seed_array = Zeroizing::new((&*ed_seed_bytes).try_into().unwrap());
+        let kp_ml = expand_seed(&*ed_seed_array);
         let sk_ml = kp_ml.signing_key;
 
         let ph_m = compute_ph(message);
@@ -189,8 +197,8 @@ impl SigningKey {
 
     pub fn verifying_key(&self) -> VerifyingKey {
         let ed_seed_bytes = self.sk_ed.to_bytes();
-        let ed_seed_array: [u8; MASTER_SEED_SIZE] = (&*ed_seed_bytes).try_into().unwrap();
-        let kp_ml = expand_seed(&ed_seed_array);
+        let ed_seed_array = Zeroizing::new((&*ed_seed_bytes).try_into().unwrap());
+        let kp_ml = expand_seed(&*ed_seed_array);
         let vk_ed = self.sk_ed.verifying_key();
         VerifyingKey {
             vk_ml: kp_ml.verification_key,
@@ -239,9 +247,9 @@ fn expand_seed(ed_seed: &[u8; MASTER_SEED_SIZE]) -> MLDSA87KeyPair {
     let mut hasher = Shake256::default();
     hasher.update(ed_seed);
     let mut reader = hasher.finalize_xof();
-    let mut ml_seed = [0u8; 32];
-    reader.read(&mut ml_seed);
-    generate_key_pair(ml_seed)
+    let mut ml_seed = Zeroizing::new([0u8; 32]);
+    reader.read(&mut *ml_seed);
+    generate_key_pair(*ml_seed)
 }
 
 fn compute_ph(message: &[u8]) -> [u8; PH_OUTPUT_LEN] {
