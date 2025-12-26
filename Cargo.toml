@@ -1,5 +1,5 @@
 [package]
-name = "pq-composite-sig"
+name = "pq-xwing-sig"
 version = "0.1.0"
 edition = "2021"
 description = "Draft-compliant composite ML-DSA signatures (LAMPS WG)"
