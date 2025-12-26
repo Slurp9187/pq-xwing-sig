@@ -1,4 +1,4 @@
-# pq-composite-sig
+# pq-xwing-sig
 
 **⚠️ WARNING: This crate is under active development and is not suitable for production use. It may contain security vulnerabilities. Use at your own risk.**
 
