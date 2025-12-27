@@ -1,6 +1,6 @@
 # Implementing Draft-Compliant Composite ML-DSA Signatures in Rust
 
-This document provides a complete guide for Zed-Grok AI to implement the **IETF LAMPS composite ML-DSA signatures** (draft-ietf-lamps-pq-composite-sigs-13, October 2025) in a new Rust crate named **`pq-composite-sig`**.
+This document provides a complete guide for Zed-Grok AI to implement the **IETF LAMPS composite ML-DSA signatures** (draft-ietf-lamps-pq-composite-sigs-13, October 2025) in a new Rust crate named **`pq-xwing-sig`**.
 
 We'll start with the **strongest variant**: **ML-DSA-87 + Ed448** (the only Ed448 pairing defined in the draft).
 
@@ -19,18 +19,18 @@ Your earlier code (the "X-Wing"-style version with custom binding tag) had sever
 
 These made it a solid custom hybrid but **not compliant** with the IETF draft.
 
-## New Crate Setup: `pq-composite-sig`
+## New Crate Setup: `pq-xwing-sig`
 
 Update your `Cargo.toml`:
 
 ```toml
 [package]
-name = "pq-composite-sig"
+name = "pq-xwing-sig"
 version = "0.1.0"
 edition = "2021"  # or 2024 if you prefer
 description = "Draft-compliant composite ML-DSA signatures (LAMPS WG)"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/yourname/pq-composite-sig"  # optional
+repository = "https://github.com/yourname/pq-xwing-sig"  # optional
 keywords = ["post-quantum", "composite", "ml-dsa", "ed448", "cryptography"]
 categories = ["cryptography", "no-std"]
 
@@ -298,6 +298,6 @@ fn compute_m_prime(ph_m: &[u8; PH_OUTPUT_LEN], context: &[u8]) -> Vec<u8> {
    - ML-DSA-65 + Ed25519 (use `ed25519-dalek`, SHA512 pre-hash, label "MLDSA65-Ed25519-SHA512")
    - ML-DSA-44 + Ed25519 (same as above, different params)
 
-This will give you a fully compliant, secure, and high-quality `pq-composite-sig` crate.
+This will give you a fully compliant, secure, and high-quality `pq-xwing-sig` crate.
 
 Let me know when this is done — we'll move to the next variants!

@@ -1,10 +1,10 @@
 [package]
-name = "pq-composite-sig"
+name = "pq-xwing-sig"
 version = "0.1.0"
 edition = "2021"
 description = "Draft-compliant composite ML-DSA signatures (LAMPS WG)"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/Slurp9187/pq-composite-sig"
+repository = "https://github.com/Slurp9187/pq-xwing-sig"
 keywords = ["post-quantum", "composite", "ml-dsa", "ed448", "cryptography"]
 categories = ["cryptography", "no-std"]
 
@@ -18,7 +18,10 @@ rand_core = "0.6"
 thiserror = "2.0"
 signature = "2.0"
 subtle = "2.6"
-ed25519-dalek = { version = "2.2", features = ["rand_core", "zeroize"] }  # For Ed25519 + zeroize compat
+ed25519-dalek = { version = "2.2", features = [
+  "rand_core",
+  "zeroize",
+] } # For Ed25519 + zeroize compat
 
 
 [dev-dependencies]
